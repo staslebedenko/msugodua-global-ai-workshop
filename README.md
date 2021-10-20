@@ -306,12 +306,11 @@ location=northeurope
 postfix=$RANDOM
 
 export groupName=msugodua-ai-workshop$postfix
-export cognAccName=msugoduaaicogn$postfix
+export cognAccName=msugoduaaicogn1$postfix
 
 az group create --name $groupName --location $location
 
 az cognitiveservices account create --name $cognAccName --kind CustomVision.Training --sku F0 --resource-group $groupName --location $location --yes
-
 
 #----------------------------------------------------------------------------------
 # Azure function app with storage account
