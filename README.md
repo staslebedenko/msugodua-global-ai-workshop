@@ -14,9 +14,16 @@ Navigate to: https://globalai.community/checkinEnter your name and emailWatch yo
 Activate an Azure Pass
 Navigate to: www.microsoftazurepass.com Click start and follow the on-screen instruction
 
+Pre-requisites:
+Python v3.x with PIP
+Azure Function tools
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v3%2Cwindows%2Ccsharp%2Cportal%2Cbash%2Ckeda#install-the-azure-functions-core-tools
+VSCode is a preferred option.
+Azure CLI tools is an option, you can run a command line from Azure Portal.
+https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli
 
 
-it is build around this source
+it is build around community workshop below, with improvements and additional logical steps.
 https://workshops.globalai.community/
 
 # 1 Setting up the environment
@@ -283,17 +290,57 @@ And now the first part of workshop is concluded.
 
 # Creating Azure infrastructure
 
-Go to the Azure Portal 
+Go to the Azure Portal and open Bash command line.
+Copy/paste script below, make sure to select the default subscription, to avoid deployment to your production environment.
 
+You might get a delay, because of provider installations with messages like this.
+Resource provider 'Microsoft.CognitiveServices' used by this operation is not registered. We are registering for you.
 
 ```
-az group create --name <resource-group-name> --location <location>
-az cognitiveservices account create --name <name> --kind CustomVision.Training --sku F0 --resource-group <resource-group-name> --location <location> --yes
+subscriptionID=$(az account list --query "[?contains(name,'Microsoft')].[id]" -o tsv)
+echo "Test subscription ID is = " $subscriptionID
+az account set --subscription $subscriptionID
+az account show
 
-az cognitiveservices account keys list --name <name> --resource-group <resource-group-name> 
+location=northeurope
+postfix=$RANDOM
 
-az cognitiveservices account show --name <name> --resource-group <resource-group-name> -o json --query properties.endpoint
+export groupName=msugodua-ai-workshop$postfix
+export cognAccName=msugoduaaicogn$postfix
 
+az group create --name $groupName --location $location
+
+az cognitiveservices account create --name $cognAccName --kind CustomVision.Training --sku F0 --resource-group $groupName --location $location --yes
+
+
+#----------------------------------------------------------------------------------
+# Azure function app with storage account
+#----------------------------------------------------------------------------------
+
+accountSku=Standard_LRS
+accountName=msugoduafunc$postfix
+
+az storage account create --name $accountName --location $location --kind StorageV2 \
+--resource-group $groupName --sku $accountSku --access-tier Hot  --https-only true
+
+accountKey=$(az storage account keys list --resource-group $groupName --account-name $accountName --query "[0].value" | tr -d '"')
+
+accountConnString="DefaultEndpointsProtocol=https;AccountName=$accountName;AccountKey=$accountKey;EndpointSuffix=core.windows.net"
+
+applicationName=msactiondaprfunc$postfix
+echo "applicationName  = " $applicationName
+
+az functionapp create --name $applicationName --storage-account $accountName --resource-group $groupName --consumption-plan-location $location \
+--runtime python --runtime-version 3.8 --functions-version 3 --os-type linux  
+
+az functionapp update --resource-group $groupName --name $applicationName --set dailyMemoryTimeQuota=400000
+
+#----------------------------------------------------------------------------------
+# Display secrets
+#----------------------------------------------------------------------------------
+
+az cognitiveservices account keys list --name $cognAccName --resource-group $groupName 
+az cognitiveservices account show --name $cognAccName --resource-group $groupName -o json --query properties.endpoint
 
 ```
 
