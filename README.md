@@ -351,19 +351,89 @@ And now the first part of workshop is concluded.
 
 
 
-#Train your model
- 
-Create a jupiter notebook from terminal in VSCode
-code cv.ipynb 
+# 5 Building Azure function.
   
-Add your code to the first cell
-print("hello world")
+Lets use CMD command line to create a new app with function cli tools.
   
-Add a new cell via + plus button and run them via Play
-Each block in this workshop shoulb be added as a new cell
+```
+func init SimpsonsFunctions --python
+cd SimpsonsFunctions 
+```  
+
+Be aware, that you should add local.settings.json to gitignore
   
-Download the dataset via
-https://github.com/hnky/dataset-lego-figures/raw/master/_download/simpsons-lego-dataset.zip
+Create a new function inside your function app
+  
+```
+func new --name Classify --template "HTTP trigger" --authlevel "anonymous"
+```
 
+open newly created file in Visual Studio Code or with command
+```
+code Classify/__init__.py 
+```
 
+Replace code inside with 
+```
+import logging
+import onnxruntime as nxrun
+import numpy as np
+import PIL
+from PIL import Image
+import requests
+from io import BytesIO
+import azure.functions as func
 
+def main(req: func.HttpRequest) -> func.HttpResponse:
+
+    ## Get the image and resize it to 244x244 pixels
+    url = req.params.get('url')
+    response = requests.get(url)
+    image = PIL.Image.open(BytesIO(response.content)).resize([224,224])
+
+    ## Load the model and score the image
+    model_path = "model/model.onnx"
+    sess = nxrun.InferenceSession(model_path)
+    input_array = np.array(image, dtype=np.float32)[np.newaxis, :, :, :]
+    input_array = input_array.transpose((0, 3, 1, 2))[:, (2, 1, 0), :, :]
+    input_name = sess.get_inputs()[0].name
+    outputs = sess.run(None, {input_name: input_array.astype(np.float32)})
+
+    ## Find the label with the highest score
+    label = outputs[0][0][0]
+    score = (outputs[1][0][outputs[0][0][0]]*100)
+    
+    ## Return and log the response
+    response = f"I'm {score:.2f}% sure I see: {label}"
+    logging.info(response)
+    return func.HttpResponse(response)
+```
+
+Copy your model to function from explorer or with cmd
+```
+cp ../model/ ./model -r
+```
+
+Open the requirements.txt. This files contains a list of packages that need to be installed in the Azure Function
+```
+code requirements.txt
+```
+And add packages
+  
+```
+onnxruntime
+pillow!=8.3.0
+requests
+```
+  
+And finally deploy your function app to Azure, use name from Azure CLI script above
+  
+```
+func azure functionapp publish msactiondaprfunc
+```
+  
+Use the url and add parameter, so function can validat one of the pictures in subset.
+  
+```
+?url=https://github.com/hnky/dataset-lego-figures/raw/master/_test/Bart.jpg
+```
