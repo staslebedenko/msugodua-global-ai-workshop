@@ -4,10 +4,9 @@ There are several key parts of this workshop.
 
 1. Getting an Azure Pass and activate it on your account
 2. Deploying Azure infrastructure
-3. Setting up a local environment with Visual Studio code and writing code
-4. Training the model
-5. Building Azure function and deploying it.
-6. Running it.
+3. Setting up a local environment with Visual Studio code, code and model training
+4. Building Azure function and deploying it.
+5. Running it.
 
 Request an Azure Pass
 Navigate to: https://globalai.community/checkinEnter your name and emailWatch your mailbox (maybe your spam) for the confirmation emailClick the activation link in the emailEnter the event codeYour azure pass will arrive shortly in your email.
@@ -120,6 +119,8 @@ Add following code to the first cell and click run(Play button on the left). You
 print("hello world")
 ```
 
+There is two way to accomplish this workshop, one is via files below, alternative is to add each code section to a new section of Jupiter Notebook.  
+  
 Create a new file dataset-download.py via terminal window
 ```
 code dataset-download.py
