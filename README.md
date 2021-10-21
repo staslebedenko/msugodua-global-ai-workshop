@@ -435,5 +435,5 @@ func azure functionapp publish msactiondaprfunc
 Use the url and add parameter, so function can validat one of the pictures in subset.
   
 ```
-?url=https://github.com/hnky/dataset-lego-figures/raw/master/_test/Bart.jpg
+https://msactiondaprfunc.azurewebsites.net/api/classify?url=https://github.com/hnky/dataset-lego-figures/raw/master/_test/Bart.jpg
 ```
