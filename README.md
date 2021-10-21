@@ -166,6 +166,10 @@ from azure.cognitiveservices.vision.customvision.training import CustomVisionTra
 from azure.cognitiveservices.vision.customvision.training.models import ImageFileCreateEntry, ImageFileCreateBatch
 from msrest.authentication import ApiKeyCredentials
 import time
+import os
+import urllib.request
+import zipfile
+import requests
 
 cv_endpoint = "https://<REGION>.api.cognitive.microsoft.com"
 training_key = "<INSERT KEY 1>"
@@ -260,20 +264,7 @@ while (export.status == "Exporting"):
             break
     print("Export status is: ", export.status)
 print("Export: done")
-```
-
-Now we will create a new file code model-download.py
-```
-code model-download.py
-```
-
-With contents
-
-```
-import os
-import requests
-import zipfile
-
+  
 if export.status == "Done":
     # Success, now we can download it
     export_file = requests.get(export.download_uri)
@@ -289,7 +280,7 @@ zip_ref.close()
 print("Data extracted in: ./model")
 ```
 
-and also create auxilary file to download dataset that our model don't know
+Create auxilary file to download dataset that our model don't know
 ```
 code test-dataset-download.py
 ```
@@ -319,6 +310,14 @@ And now we need to test if our model works.
 code validate-model.py
 ```
 
+install a few pip packages
+  
+```
+pip install onnxruntime
+pip install numpy
+pip install Pillow
+```
+  
 With code
 ```
 import onnxruntime as nxrun
@@ -370,6 +369,7 @@ func new --name Classify --template "HTTP trigger" --authlevel "anonymous"
 
 open newly created file in Visual Studio Code or with command
 ```
+pip install azure-functions
 code Classify/__init__.py 
 ```
 
