@@ -281,13 +281,21 @@ zip_ref.close()
 print("Data extracted in: ./model")
 ```
 
-Create auxilary file to download dataset that our model don't know
+```
+python custom-vision.py
+```
+
+Create auxilary file to download dataset that our model don't know and validate results
 ```
 code test-dataset-download.py
 ```
 
 With contents 
 ```
+import os
+import urllib.request
+import zipfile
+
 # Download the dataset from Github
 data_url = "https://github.com/hnky/dataset-lego-figures/raw/master/_download/test-images.zip"
 data_path = "./data-test"
@@ -306,7 +314,14 @@ os.remove(download_path)
 print("Downloaded file removed: {}".format(download_path))
 ```
 
-And now we need to test if our model works.
+We added code in chunks with explanations, now we will run it with
+
+```
+python test-dataset-download.py
+```
+
+And now we need to test if our model works. So we creating a new file
+
 ```
 code validate-model.py
 ```
@@ -345,6 +360,11 @@ for image_filepath in testimages[0:5]:
     print("Label: " + outputs[0][0][0])
     print("Score: " + str(outputs[1][0][outputs[0][0][0]]))
     print("--")
+```
+
+Running the file from console, make sure to download the test images with previous file
+```
+python validate-model.py
 ```
 
 And now the first part of workshop is concluded.
