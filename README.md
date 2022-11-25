@@ -340,6 +340,7 @@ import onnxruntime as nxrun
 import numpy as np
 import PIL
 from PIL import Image
+import os
 
 training_images = "./data-test"
 model_path = "./model/model.onnx"
