@@ -23,7 +23,6 @@ https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-
 
 
 it is build around community workshop below, with improvements and additional logical steps.
-https://workshops.globalai.community/
 
 # 2 Deploying Azure infrastructure
 
