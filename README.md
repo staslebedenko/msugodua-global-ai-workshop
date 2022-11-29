@@ -2,19 +2,15 @@
 
 There are several key parts of this workshop.
 
-1. Getting an Azure Pass and activate it on your account
+1. Getting an Azure free subscription and activating it https://azure.microsoft.com/en-us/free/
 2. Deploying Azure infrastructure
-3. Setting up a local environment with Visual Studio code, code and model training
+3. Setting up a local environment with Visual Studio code, python and model training
 4. Building Azure function and deploying it.
 5. Running it.
-
-Request an Azure Pass
-Navigate to: https://globalai.community/checkinEnter your name and emailWatch your mailbox (maybe your spam) for the confirmation emailClick the activation link in the emailEnter the event codeYour azure pass will arrive shortly in your email.
-Activate an Azure Pass
-Navigate to: www.microsoftazurepass.com Click start and follow the on-screen instruction
+6. Do the homework, by switching function to the C# code
 
 Pre-requisites:
-Python v3.x with PIP
+Python v3.9 with PIP
 Azure Function tools
 https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v3%2Cwindows%2Ccsharp%2Cportal%2Cbash%2Ckeda#install-the-azure-functions-core-tools
 VSCode is a preferred option.
